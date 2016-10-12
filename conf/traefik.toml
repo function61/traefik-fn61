@@ -9,9 +9,20 @@ defaultEntryPoints = ["http"]
   [entryPoints.http]
   address = ":80"
 
-[consulCatalog]
-  endpoint = "172.17.0.1:8500"
-  constraints = [ "tag==traefik" ]
+[docker]
+  endpoint = "unix:///run/docker.sock"
+
+  # we're always explicitly defining the frontend rule, so we don't need default domain
+  domain = ".invalid"
+
+  # pick up updates
+  watch = true
+
+  # use Docker Swarm API to list tasks (= cluster-wide) instead of containers (= host-specific)
+  swarmmode = true
+
+  # require traefik.enable=True
+  exposedbydefault = false
 
 [file]
 
@@ -21,16 +32,7 @@ defaultEntryPoints = ["http"]
     [frontends.traefikstats.routes.default]
     rule = "Host:traefikstats.dev-laptop.xs.fi"
 
-  [frontends.consul]
-  backend = "consul"
-    [frontends.consul.routes.default]
-    rule = "Host:consul.dev-laptop.xs.fi"
-
 [backends]
   [backends.traefikstats]
     [backends.traefikstats.servers.default]
     url = "http://127.0.0.1:8080"
-
-  [backends.consul]
-    [backends.consul.servers.default]
-    url = "http://172.17.0.1:8500"

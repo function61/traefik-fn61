@@ -1,13 +1,18 @@
 
-defaultEntryPoints = ["http"]
+defaultEntryPoints = ["public_http"]
 
 # debug UI
 [web]
   address = ":8080"
 
 [entryPoints]
-  [entryPoints.http]
+  [entryPoints.public_http]
   address = ":80"
+
+  [entryPoints.backoffice]
+  address = ":9001"
+  [entryPoints.backoffice.auth.basic]
+  users = #BACKOFFICE_USERS
 
 [docker]
   endpoint = "unix:///run/docker.sock"
@@ -23,16 +28,3 @@ defaultEntryPoints = ["http"]
 
   # require traefik.enable=True
   exposedbydefault = false
-
-[file]
-
-[frontends]
-  [frontends.traefikstats]
-  backend = "traefikstats"
-    [frontends.traefikstats.routes.default]
-    rule = "Host:traefikstats.dev-laptop.xs.fi"
-
-[backends]
-  [backends.traefikstats]
-    [backends.traefikstats.servers.default]
-    url = "http://127.0.0.1:8080"

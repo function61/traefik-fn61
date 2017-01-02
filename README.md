@@ -5,7 +5,7 @@ traefik-fn61
 
 - Service discovery via Docker swarm - multi-host overlay networking
 - Explicit `traefik.enable=true` required, i.e. whitelist instead of blacklist - we're not animals here
-- Traefik UI visible via hostname traefikstats.dev-laptop.xs.fi
+
 
 Running
 -------

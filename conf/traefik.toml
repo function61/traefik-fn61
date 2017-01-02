@@ -24,6 +24,7 @@ defaultEntryPoints = ["public_http", "public_https"]
       CertFile = "/etc/traefik/ssl_certs/public_https.crt"
       KeyFile = "/etc/traefik/ssl_certs/public_https.key"
   [entryPoints.backoffice.auth.basic]
+  # replaced dynamically from /run.sh
   users = #BACKOFFICE_USERS
 
 [docker]

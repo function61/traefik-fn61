@@ -1,16 +1,28 @@
 
-defaultEntryPoints = ["public_http"]
+defaultEntryPoints = ["public_http", "public_https"]
 
-# debug UI
+# admin/debug UI
 [web]
   address = ":8080"
 
+# entrypoints are basically TCP ports which the dynamic frontends will attach to
 [entryPoints]
   [entryPoints.public_http]
   address = ":80"
 
+  [entryPoints.public_https]
+  address = ":443"
+    [entryPoints.public_https.tls]
+      [[entryPoints.public_https.tls.certificates]]
+      CertFile = "/etc/traefik/ssl_certs/public_https.crt"
+      KeyFile = "/etc/traefik/ssl_certs/public_https.key"
+
   [entryPoints.backoffice]
   address = ":9001"
+    [entryPoints.backoffice.tls]
+      [[entryPoints.backoffice.tls.certificates]]
+      CertFile = "/etc/traefik/ssl_certs/public_https.crt"
+      KeyFile = "/etc/traefik/ssl_certs/public_https.key"
   [entryPoints.backoffice.auth.basic]
   users = #BACKOFFICE_USERS
 

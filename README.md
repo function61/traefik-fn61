@@ -1,6 +1,8 @@
 traefik-fn61
 ============
 
+tl;dr: your Docker Swarm -based services are discovered and loadbalanced automatically.
+
 [Traefik](https://traefik.io/) configured for needs of function61.com:
 
 - Service discovery via Docker Swarm - multi-host overlay networking.

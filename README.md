@@ -9,7 +9,7 @@ tl;dr: your Docker Swarm -based services are discovered and loadbalanced automat
 - Explicit `traefik.enable=true` required, i.e. whitelist instead of blacklist - we're not animals here.
 - Default frontends are `public_http` and `public_https`. If you have company-internal services (like
   monitoring via [Prometheus](https://prometheus.io/)), create that service with `-l traefik.frontend.entryPoints=backoffice`
-  to have it not exposed publicly, but via the backoffice entrypoint (https+basic auth in port 9001).
+  to have it not exposed publicly, but via the backoffice entrypoint (https+client cert auth in port 9001).
 
 
 Running
@@ -25,22 +25,52 @@ $ docker service create --name traefik-fn61 \
 	-p 80:80 \
 	-p 443:443 \
 	-p 9001:9001 \
-	-e 'BACKOFFICE_USERS=[\"user:PASSWORD_IN_HTPASSWD_FORMAT\"]' \
-	-e 'SSL_CERT_PRIVATE_KEY=...' \
+	-e 'SSL_CERT_PRIVATE_KEY=... public_https.key base64-encoded ...' \
 	fn61/traefik-fn61
 ```
 
 NOTE: current limitation is that you have to run Traefik on the same node as as a Swarm manager.
 
 
-SSL cert
---------
+SSL config
+----------
+
+These three files live in Traefik's configuration:
+
+- ca.crt
+- public_https.crt
+- public_https.key (secret - injected via ENV variable at container startup)
 
 ```
-$ openssl req -x509 -newkey rsa:4096 -keyout public_https.key -out conf/public_https.crt -days 3650 -nodes -subj /CN=localhost'
-
-# provide output of this via ENV SSL_CERT_PRIVATE_KEY when running this image
-$ cat public_https.key | base64 --wrap=0 && rm public_https.key
++------------------+
+|                  |
+| ca.crt (root CA) |
+| (self-signed)    |
+|                  |
++--------------+---+
+               |
+               |      +--------------------+
+               |      |                    |
+               +------+ Server cert:       |
+               |      | - public_https.crt |
+               |      | - public_https.key |
+               |      |                    |
+               |      +--------------------+
+               |
+               |      +---------------------------------+
+               |      |                                 |
+               +------+  Client certs                   |
+                      |  - authentication to backoffice |
+                      |                                 |
+                      +---------------------------------+
 ```
 
-Self-signed certs only work because we're being fronted by Cloudflare. Certs facing public users anchor to trusted CAs.
+Port `443` is backed by `public_https` certificate. It is self-signed and thus not accepted
+by general web users, but that is okay because we're fronted by Cloudflare which serves its
+own SSL cert to users, and their cert is backed by publicly recognized CAs.
+
+Port `9001` is backed by the same `public_https` certificate, but with attached to different
+frontend, "backoffice". Backoffice is for company-internal services that require authentication.
+Authentication is implemented via client certs that must anchor to `ca.crt`.
+
+SSL cert setup is documented [here](https://github.com/function61/certificate-authority).

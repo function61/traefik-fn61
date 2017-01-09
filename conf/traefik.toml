@@ -20,12 +20,10 @@ defaultEntryPoints = ["public_http", "public_https"]
   [entryPoints.backoffice]
   address = ":9001"
     [entryPoints.backoffice.tls]
+    clientCAFiles = ["/etc/traefik/ssl_certs/ca.crt"]
       [[entryPoints.backoffice.tls.certificates]]
       CertFile = "/etc/traefik/ssl_certs/public_https.crt"
       KeyFile = "/etc/traefik/ssl_certs/public_https.key"
-  [entryPoints.backoffice.auth.basic]
-  # replaced dynamically from /run.sh
-  users = #BACKOFFICE_USERS
 
 [docker]
   endpoint = "unix:///run/docker.sock"

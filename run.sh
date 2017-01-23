@@ -7,7 +7,7 @@ configure_ssl_cert_private_key() {
 }
 
 start_traefik() {
-	exec traefik
+	exec /traefik
 }
 
 configure_ssl_cert_private_key

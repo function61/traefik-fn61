@@ -1,7 +1,10 @@
 traefik-fn61
 ============
 
-tl;dr: your Docker Swarm -based services are discovered and loadbalanced automatically.
+TL;DR: Docker Swarm -based services are discovered and loadbalanced automatically by Traefik.
+
+DISCLAIMER: This is only a sample configuration to produce an image for our needs - you cannot just directly
+use this and expect it to work for you. You need to at least replace the SSL certs and your own private key.
 
 [Traefik](https://traefik.io/) configured for needs of function61.com:
 

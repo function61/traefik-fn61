@@ -1,6 +1,11 @@
 
 defaultEntryPoints = ["public_http", "public_https"]
 
+[metrics]
+  [metrics.prometheus]
+    entryPoint = "traefik"
+    buckets = [0.1,0.3,1.2,5.0]
+
 # admin/debug UI
 [api]
   entryPoint = "traefik"
@@ -26,7 +31,7 @@ defaultEntryPoints = ["public_http", "public_https"]
       CertFile = "/etc/traefik/ssl_certs/public_https.crt"
       KeyFile = "/etc/traefik/ssl_certs/public_https.key"
 
-  # admin API + Traefik admin dashboard
+  # admin API + Traefik admin dashboard + Prometheus metrics
   [entryPoints.traefik]
   address = ":8081"
 

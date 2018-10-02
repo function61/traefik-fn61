@@ -2,8 +2,9 @@
 defaultEntryPoints = ["public_http", "public_https"]
 
 # admin/debug UI
-[web]
-  address = ":8080"
+[api]
+  entryPoint = "traefik"
+  dashboard = true
 
 # entrypoints are basically TCP ports which the dynamic frontends will attach to
 [entryPoints]
@@ -25,8 +26,12 @@ defaultEntryPoints = ["public_http", "public_https"]
       CertFile = "/etc/traefik/ssl_certs/public_https.crt"
       KeyFile = "/etc/traefik/ssl_certs/public_https.key"
 
+  # admin API + Traefik admin dashboard
+  [entryPoints.traefik]
+  address = ":8081"
+
 [docker]
-  endpoint = "unix:///run/docker.sock"
+  endpoint = "unix:///var/run/docker.sock"
 
   # we're always explicitly defining the frontend rule, so we don't need default domain
   domain = ".invalid"
@@ -38,4 +43,8 @@ defaultEntryPoints = ["public_http", "public_https"]
   swarmmode = true
 
   # require traefik.enable=True
-  exposedbydefault = false
+  exposedByDefault = false
+
+  # without this the admin dashboard didn't work properly
+  # (it kept having another IP address?)
+  network = "fn61"

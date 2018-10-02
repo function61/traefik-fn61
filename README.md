@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/function61/traefik-fn61.svg?branch=master)](https://travis-ci.org/function61/traefik-fn61)
+[![Download](https://img.shields.io/docker/pulls/fn61/traefik-fn61.svg)](https://hub.docker.com/r/fn61/traefik-fn61/)
+
 traefik-fn61
 ============
 

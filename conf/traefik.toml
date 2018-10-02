@@ -36,7 +36,7 @@ defaultEntryPoints = ["public_http", "public_https"]
   address = ":8081"
 
 [docker]
-  endpoint = "unix:///var/run/docker.sock"
+  endpoint = "https://dockersockproxy:4431"
 
   # we're always explicitly defining the frontend rule, so we don't need default domain
   domain = ".invalid"
@@ -53,3 +53,9 @@ defaultEntryPoints = ["public_http", "public_https"]
   # without this the admin dashboard didn't work properly
   # (it kept having another IP address?)
   network = "fn61"
+
+  [docker.tls]
+  ca = "/etc/traefik/ssl_certs/ca.crt"
+  cert = "/etc/traefik/ssl_certs/public_https.crt"
+  key = "/etc/traefik/ssl_certs/public_https.key"
+  insecureSkipVerify = true

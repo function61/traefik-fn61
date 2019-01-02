@@ -1,6 +1,9 @@
 
 defaultEntryPoints = ["public_http", "public_https"]
 
+[accessLog]
+filePath = "/dev/stdout"
+
 [metrics]
   [metrics.prometheus]
     entryPoint = "traefik"
